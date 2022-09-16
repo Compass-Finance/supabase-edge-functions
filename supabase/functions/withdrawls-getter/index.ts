@@ -1,25 +1,58 @@
-// Follow this setup guide to integrate the Deno language server with your editor:
-// https://deno.land/manual/getting_started/setup_your_environment
-// This enables autocomplete, go to definition, etc.
+import { serve } from 'https://deno.land/std@0.131.0/http/server.ts';
+import axiod from 'https://deno.land/x/axiod/mod.ts';
 
-import { serve } from "https://deno.land/std@0.131.0/http/server.ts"
+console.log('hi');
 
-console.log("Hello from Functions!")
+serve(async () => {
+  const apiKey = Deno.env.get('ALCHEMY_API_KEY');
+  const baseURL = `https://polygon-mainnet.g.alchemy.com/v2/${apiKey}`;
+  // Replace with the wallet address you want to query:
+  const ownerAddr = '0x3f5ce5fbfe3e9af3971dd833d26ba9b5c936f0be';
+  // Replace with the token contract address you want to query:
+  const tokenAddr = [
+    '0x607f4c5bb672230e8672085532f7e901544a7375',
+    '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063',
+  ];
 
-serve(async (req) => {
-  const { name } = await req.json()
-  const data = {
-    message: `Hello ${name}!`,
-  }
+  const queryData = JSON.stringify({
+    jsonrpc: '2.0',
+    method: 'alchemy_getTokenBalances',
+    params: [`${ownerAddr}`, tokenAddr],
+    id: 42,
+  });
+  console.log(apiKey, '<====== api key');
 
-  return new Response(
-    JSON.stringify(data),
-    { headers: { "Content-Type": "application/json" } },
-  )
-})
+  const config = {
+    method: 'post',
+    url: baseURL,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: queryData,
+  };
+  const res = await axiod(config)
+    .then(function (response) {
+      console.log(JSON.stringify(response.data, null, 2));
+      return response.data;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
 
-// To invoke:
-// curl -i --location --request POST 'http://localhost:54321/functions/v1/' \
-//   --header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24ifQ.625_WdcF3KHqz5amU0x2X5WWHP-OEs_4qj0ssLNHzTs' \
-//   --header 'Content-Type: application/json' \
-//   --data '{"name":"Functions"}'
+  const returnedData = res.result;
+  // shape of the data
+  const result = {
+    address: '0x...',
+    tokenBalances: [
+      {
+        contractAddress: '0x...',
+        tokenBalance: '0x....',
+      },
+    ],
+  };
+  // this code is actually a balances getter but let's get working on this tmw
+
+  return new Response(JSON.stringify(res), {
+    headers: { 'Content-Type': 'application/json' },
+  });
+});

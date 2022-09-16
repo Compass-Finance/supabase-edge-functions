@@ -1,6 +1,6 @@
 import { serve } from 'https://deno.land/std@0.131.0/http/server.ts';
-import { createClient } from 'https://deno.land/x/supabase@1.3.1/mod.ts';
 import { supabaseClient } from '../shared/supabaseClient.ts';
+import { createClient } from 'https://deno.land/x/supabase@1.3.1/mod.ts';
 import {
   coinGeckoTokenIdsType,
   coinGeckoToMyMapping,
@@ -9,7 +9,9 @@ import {
   tokenNames,
 } from '../constants/priceGetter.constants.ts';
 
-serve(async () => {
+console.log('hi');
+
+const getPriceAndUpdateDB = async () => {
   try {
     const coingeckoResponse = await fetch(
       `https://api.coingecko.com/api/v3/simple/price?ids=${COIN_GECKO_API_QUERY_STRING}&vs_currencies=usd`
@@ -35,16 +37,24 @@ serve(async () => {
     for (let i = 0; i < uncleanedPricesArr.length; i++) {
       finalDataStruc.push({
         name: actualTokenNames[i],
-        price: cleanedPricesArr[i],
+        price: `${cleanedPricesArr[i]}`,
       });
     }
     console.log(finalDataStruc);
     await supabaseClient.from('Token Prices').update(finalDataStruc);
-    console.log(finalDataStruc);
-    return new Response(JSON.stringify(finalDataStruc), {
+
+    const updatedData = supabaseClient.from('Token Prices').select('price');
+
+    // what are some work arounds for this?
+    return new Response(JSON.stringify(updatedData.select('price')), {
       headers: { 'Content-type': "I don't fucking know plz work" },
     });
   } catch (err) {
+    console.log(`This is the error ======> ${err}`);
     return err;
   }
-});
+};
+
+serve(getPriceAndUpdateDB);
+
+console.log('end');
