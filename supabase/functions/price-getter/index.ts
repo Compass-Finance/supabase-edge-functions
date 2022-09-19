@@ -1,13 +1,12 @@
 import { serve } from 'https://deno.land/std@0.131.0/http/server.ts';
 import { supabaseClient } from '../shared/supabaseClient.ts';
-import { createClient } from 'https://deno.land/x/supabase@1.3.1/mod.ts';
 import {
   coinGeckoTokenIdsType,
   coinGeckoToMyMapping,
   coinGeckoResponse,
   COIN_GECKO_API_QUERY_STRING,
   tokenNames,
-} from '../constants/priceGetter.constants.ts';
+} from '../constants/index.ts';
 
 console.log('hi');
 
@@ -57,4 +56,4 @@ const getPriceAndUpdateDB = async () => {
 
 serve(getPriceAndUpdateDB);
 
-console.log('end');
+// ✅ Ready for Production

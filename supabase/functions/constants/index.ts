@@ -1,3 +1,4 @@
+// ~ ============= PRICE GETTER CONSTANTS ================= \\
 export const COIN_GECKO_TOKEN_IDS = [
   'dai',
   'matic-network',
@@ -7,6 +8,7 @@ export const COIN_GECKO_TOKEN_IDS = [
 ];
 
 export type tokenNames = 'dai' | 'matic' | 'renbtc' | 'usdc' | 'weth';
+
 export type coinGeckoTokenIdsType =
   | 'dai'
   | 'matic-network'
@@ -32,3 +34,12 @@ export const coinGeckoToMyMapping: coinGeckoMapping = {
 };
 
 export const COIN_GECKO_API_QUERY_STRING = COIN_GECKO_TOKEN_IDS.join('%2C');
+// ~ ============= PRICE GETTER CONSTANTS ================= \\
+// * ============= Regerister User Constants ============== \\
+export type registerUserDBEntry = tokenNames | 'balance_id';
+
+export const registerUserTables = [
+  'Hex Native Balances',
+  'Human Readable Native Balances',
+  'Human Readable USD Balances',
+];
