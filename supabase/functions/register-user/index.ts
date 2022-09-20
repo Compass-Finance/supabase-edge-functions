@@ -21,11 +21,11 @@ serve(async (req) => {
   try {
     await supabaseClient
       .from('address => balance_id')
-      .upsert({ addresses: address });
+      .insert({ address: address });
     const balanceIdRes = await supabaseClient
       .from('address => balance_id')
       .select()
-      .eq('addresses', address)
+      .eq('address', address)
       .select('balance_id');
     if (balanceIdRes.data) {
       const balanceId = balanceIdRes.data[0].balance_id;

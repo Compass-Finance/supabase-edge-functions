@@ -35,7 +35,7 @@ export const coinGeckoToMyMapping: coinGeckoMapping = {
 
 export const COIN_GECKO_API_QUERY_STRING = COIN_GECKO_TOKEN_IDS.join('%2C');
 // ~ ============= PRICE GETTER CONSTANTS ================= \\
-// * ============= Regerister User Constants ============== \\
+// * ============= Register User Constants ============== \\
 export type registerUserDBEntry = tokenNames | 'balance_id';
 
 export const registerUserTables = [
@@ -43,3 +43,31 @@ export const registerUserTables = [
   'Human Readable Native Balances',
   'Human Readable USD Balances',
 ];
+// * ============= Register User Constants ============== \\
+// ^ ============ Balances Getter Constants ============= \\
+export const tokenAddysToQuery = [
+  '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063',
+  // ^^ DAI
+  '0x0000000000000000000000000000000000001010',
+  // ^^ MATIC
+  '0xDBf31dF14B66535aF65AaC99C32e9eA844e14501',
+  // ^^ RENBTC
+  '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
+  // ^^ USDC
+  '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619',
+  // ^^ WETH
+];
+// ^ ============ Balances Getter Constants ============= \\
+// & ============ Balances Updater Constants ============= & \\
+export interface combinedTokenDataType {
+  name: string;
+  decimals: number;
+  balance: string;
+  price: number;
+}
+
+export type DbEntry = {
+  [key in tokenNames]: string | number;
+};
+
+// & ============ Balances Updater Constants ============= & \\
