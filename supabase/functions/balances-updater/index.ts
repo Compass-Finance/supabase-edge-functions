@@ -9,6 +9,7 @@ import {
 } from '../constants/index.ts';
 
 serve(async (req) => {
+  // TODO: build short circuiting into this, so cross reference between the hex values returned from alchemy and the values present in the db
   try {
     const { addressToQuery } = await req.json();
     const balancesGetterRes = await supabaseClient.functions.invoke(

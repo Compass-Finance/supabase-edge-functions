@@ -1,11 +1,10 @@
 import { serve } from 'https://deno.land/std@0.131.0/http/server.ts';
 import axoid from 'https://deno.land/x/axiod@0.26.2/mod.ts';
 import { tokenAddysToQuery } from '../constants/index.ts';
+import { MATIC_RPC_URL } from '../shared/alchemy.ts';
 
 serve(async (req) => {
   const { addressToQuery } = await req.json();
-  const apiKey = Deno.env.get('ALCHEMY_API_KEY');
-  const maticAlchemyURL = `https://polygon-mainnet.g.alchemy.com/v2/${apiKey}`;
 
   const alchemyQueryData = JSON.stringify({
     jsonrpc: '2.0',
@@ -16,7 +15,7 @@ serve(async (req) => {
 
   const axoidConfig = {
     method: 'post',
-    url: maticAlchemyURL,
+    url: MATIC_RPC_URL,
     headers: {
       'Content-Type': 'application/json',
     },

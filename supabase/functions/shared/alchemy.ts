@@ -1,1 +1,2 @@
-import { Network } from 'https://cdn.jsdelivr.net/npm/alchemy-sdk@2.0.4/dist/cjs/src/types/types.d.ts';
+const ALCHEMY_API_KEY = Deno.env.get('ALCHEMY_API_KEY');
+export const MATIC_RPC_URL = `https://polygon-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}`;
