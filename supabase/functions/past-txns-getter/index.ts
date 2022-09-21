@@ -3,7 +3,11 @@
 // This enables autocomplete, go to definition, etc.
 
 import { serve } from 'https://deno.land/std@0.131.0/http/server.ts';
-import { tokenAddysToQuery } from '../constants/index.ts';
+import {
+  tokenAddysToQuery,
+  alchemyTxnResponseEntry,
+  cleanedAlchemyTxnEntry,
+} from '../constants/index.ts';
 import { MATIC_RPC_URL } from '../shared/alchemy.ts';
 
 serve(async (req) => {
@@ -37,40 +41,27 @@ serve(async (req) => {
   const alchemyRes = await (
     await fetch(MATIC_RPC_URL, alchemyQueryOptions)
   ).json();
-  const alchemyData = alchemyRes.result.transfers;
-  console.log(alchemyData, '<===== Alchemy Data');
 
-  return new Response(JSON.stringify(alchemyData), {
+  // console.log(`Alchemy res ====> ${JSON.stringify(alchemyRes)}`);
+
+  const uncleanedAlchemyData = alchemyRes.result.transfers;
+  const cleanedAlchemyData: cleanedAlchemyTxnEntry[] = [];
+
+  uncleanedAlchemyData.map(
+    (txnEntry: alchemyTxnResponseEntry, index: number) => {
+      cleanedAlchemyData.push({
+        id: index,
+        from: withdrawlsOrDeposits === 'deposits' ? txnEntry.from : undefined,
+        to: withdrawlsOrDeposits === 'withdrawls' ? txnEntry.to : undefined,
+        value: txnEntry.value,
+        asset: txnEntry.asset,
+        date: txnEntry.metadata.blockTimestamp,
+      });
+    }
+  );
+
+  return new Response(JSON.stringify(cleanedAlchemyData), {
     headers: { 'Content-Type': 'application/json' },
   });
 });
-
-/* 
-## WITHDRAWLS || DEPOSITS
-
-========|===========================|==========|
-address | withdrawl_id / deposit_id | txn_info |
-========|===========================|==========|
-to start you have the address which in this case will the the address that things are WITHDRAWN from, and then you'd want to have an indexer of some sort,
-and that will be the withdrawl_id which will essentially be a mirror of the transaction indices, so then when you want to check between the alchemy API array,
-and the highest returned withdrawl_id for that address 
-
-TXN_INFO example:  ```
-    {
-      from: '0xc19b2c8f77948104798ac71fc3f85117d94d2bd6',
-      to: '0x777adf356eebc4a607a1867ce4fccfc23fb69413',
-      value: 0.01,
-      asset: 'DAI',
-      metadata: { blockTimestamp: '2022-09-07T23:12:37.000Z' },
-    },
-```
-The code would look something like this:
-
-if (alchemyResponse.length -1 === highestReturnedWithdrawlId) {
-    return early
-} else {
-    do expensive computations
-}
-
-I think this is enough knowledge to implement it,
-*/
+// ✅ Prod Ready

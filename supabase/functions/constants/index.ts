@@ -71,3 +71,31 @@ export type DbEntry = {
 };
 
 // & ============ Balances Updater Constants ============= & \\
+// ~ ============ Past Txn Getter Constants ============== ~ \\
+export type alchemyTxnResponseEntry = {
+  blockNum: string;
+  uniqueId: string;
+  hash: string;
+  from: string;
+  to: string;
+  value: number;
+  asset: string;
+  category: string;
+  rawContract: {
+    value: string;
+    address: string;
+    decimal: string;
+  };
+  metadata: { blockTimestamp: string };
+};
+
+export type cleanedAlchemyTxnEntry = {
+  id: number;
+  from?: string;
+  to?: string;
+  value: number;
+  asset: string;
+  date: string;
+};
+
+// ~ ============ Past Txn Getter Constants ============== ~ \\
