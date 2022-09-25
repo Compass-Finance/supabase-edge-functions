@@ -17,7 +17,7 @@ serve(async (req) => {
 
   try {
     if (pastTxnsGetterRes.data.length === 0) {
-      return new Response("Couldn't Find Any Withdrawls");
+      return new Response(`Couldn't Find Any ${withdrawlsOrDeposits}`);
     } else if (pastTxnsGetterRes.data.length > 0) {
       const addressWithdrawlsInfo = await supabaseClient
         .from(withdrawlsOrDeposits)
@@ -29,7 +29,7 @@ serve(async (req) => {
           address: addressToQuery,
           txns_info: pastTxnsGetterRes.data,
         });
-        return new Response('There were things that were pushed');
+        return new Response(`Fresh ${withdrawlsOrDeposits} were added`);
       } else {
         const highestWithdrawlOrDepositObj = await supabaseClient
           .from(withdrawlsOrDeposits)
@@ -56,10 +56,10 @@ serve(async (req) => {
               })
               .match({ address: addressToQuery });
             return new Response(
-              "There was an incongruence, you're transactions were updated"
+              `You had some ${withdrawlsOrDeposits} and more were added`
             );
           } else {
-            return new Response("You're transactions are up to date!");
+            return new Response(`Your ${withdrawlsOrDeposits} are up to date!`);
           }
         }
       }
