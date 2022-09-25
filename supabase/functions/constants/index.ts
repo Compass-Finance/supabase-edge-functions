@@ -91,6 +91,7 @@ export type alchemyTxnResponseEntry = {
 
 export type cleanedAlchemyTxnEntry = {
   id: number;
+  hash: string;
   from?: string;
   to?: string;
   value: number;

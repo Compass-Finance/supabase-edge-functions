@@ -45,6 +45,7 @@ serve(async (req) => {
     (txnEntry: alchemyTxnResponseEntry, index: number) => {
       cleanedAlchemyData.push({
         id: index,
+        hash: txnEntry.hash,
         from: withdrawlsOrDeposits === 'deposits' ? txnEntry.from : undefined,
         to: withdrawlsOrDeposits === 'withdrawls' ? txnEntry.to : undefined,
         value: txnEntry.value,
