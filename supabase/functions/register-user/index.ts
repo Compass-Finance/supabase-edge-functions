@@ -21,7 +21,7 @@ serve(async (req) => {
   try {
     await supabaseClient
       .from('address => balance_id')
-      .insert({ address: address });
+      .upsert({ address: address });
     const balanceIdRes = await supabaseClient
       .from('address => balance_id')
       .select()
@@ -44,7 +44,7 @@ serve(async (req) => {
       registerUserTables.map(async (value) => {
         await supabaseClient.from(value).upsert(finalDS);
       });
-      return new Response('Success!');
+      return new Response(JSON.stringify({ data: 'Success!' }));
     } else {
       return new Response('No ID Found');
     }
