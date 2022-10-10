@@ -5,19 +5,25 @@ import { supabaseClient } from '../shared/supabaseClient.ts';
 import { tokenBalFormatter } from '../utils/TokenBalanceFormatter.ts';
 import {
   combinedTokenDataType,
-  registerUserTables,
+  prodRegisterUserTables,
+  devRegisterUserTables,
 } from '../constants/index.ts';
 
 serve(async (req) => {
   // TODO: build short circuiting into this, so cross reference between the hex values returned from alchemy and the values present in the db
   try {
-    const { addressToQuery } = await req.json();
+    const { addressToQuery, network } = await req.json();
     const balancesGetterRes = await supabaseClient.functions.invoke(
       'balances-getter',
       {
-        body: JSON.stringify({ addressToQuery: addressToQuery }),
+        body: JSON.stringify({
+          addressToQuery: addressToQuery,
+          network: network,
+        }),
       }
     );
+    const registerUserTables =
+      network === 'mumbai' ? devRegisterUserTables : prodRegisterUserTables;
 
     const balanceIdReq = await supabaseClient
       .from('address => balance_id')
@@ -27,8 +33,10 @@ serve(async (req) => {
     // @ts-ignore
     const balanceId = balanceIdReq.body[0].balance_id;
 
-    const tokenInformation = await supabaseClient.from('Token Data').select();
-    const tokenPrices = await supabaseClient.from('Token Prices').select();
+    const tokenInformation = await supabaseClient
+      .from(`${network === 'mumbai' ? 'Mumbai Token Data' : 'Token Data'}`)
+      .select(); // <== has to be parameterized
+    const tokenPrices = await supabaseClient.from('Token Prices').select(); // DNC
 
     const balancesData = balancesGetterRes.data.tokenBalances;
     const tokenInfoData = tokenInformation.body;
@@ -86,6 +94,7 @@ serve(async (req) => {
         .from(registerUserTables[i])
         .upsert(finalDS[i])
         .match({ balance_id: Number(balanceId) });
+      // && we'll have to add our
     }
 
     return new Response(

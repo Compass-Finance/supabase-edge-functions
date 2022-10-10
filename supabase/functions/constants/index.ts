@@ -38,14 +38,21 @@ export const COIN_GECKO_API_QUERY_STRING = COIN_GECKO_TOKEN_IDS.join('%2C');
 // * ============= Register User Constants ============== \\
 export type registerUserDBEntry = tokenNames | 'balance_id';
 
-export const registerUserTables = [
+export const prodRegisterUserTables = [
   'Hex Native Balances',
   'Human Readable Native Balances',
   'Human Readable USD Balances',
 ];
+
+export const devRegisterUserTables = [
+  'Dev Hex Native Balances',
+  'Dev Human Readable Native Balances',
+  'Dev Human Readable USD Balances',
+];
+
 // * ============= Register User Constants ============== \\
 // ^ ============ Balances Getter Constants ============= \\
-export const tokenAddysToQuery = [
+export const mainnetTokenAddysToQuery = [
   '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063',
   // ^^ DAI
   '0x0000000000000000000000000000000000001010',
@@ -57,6 +64,16 @@ export const tokenAddysToQuery = [
   '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619',
   // ^^ WETH
 ];
+
+export const mumbaiTokenAddysToQuery = [
+  '0x9A753f0F7886C9fbF63cF59D0D4423C5eFaCE95B',
+  // ^^ DAI
+  '0x0000000000000000000000000000000000001010',
+  // ^^ MATIC
+  '0xd575d4047f8c667E064a4ad433D04E25187F40BB',
+  // ^^ WETH
+];
+
 // ^ ============ Balances Getter Constants ============= \\
 // & ============ Balances Updater Constants ============= & \\
 export interface combinedTokenDataType {

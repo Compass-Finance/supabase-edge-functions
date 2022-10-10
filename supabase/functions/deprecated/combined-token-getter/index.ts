@@ -1,5 +1,5 @@
 import { serve } from 'https://deno.land/std@0.131.0/http/server.ts';
-import { supabaseClient } from '../shared/supabaseClient.ts';
+import { supabaseClient } from '../../shared/supabaseClient.ts';
 
 //❌ Deprecated, moved to DB Function
 serve(async (req) => {
